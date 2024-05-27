@@ -1,15 +1,12 @@
 # PokeSif
 Fully Extendable Game made with Löve-Lua.
 
-
 ## Defining feature
 - pixel art game
 
 ## Game rules
 Fixed Size Window :
 - must be a power of two (probably 512 * 512)
-
-
 
 # Levels
 - Each level is located in ONE file and only ONE lua file.
@@ -60,9 +57,16 @@ eacht element os this table contains :
 - NOT any use of love function
 - functions should not crash
 
-
-
+## How the map is defined :
 
 # Is there a global state of the game ?
 So that there can be state about ?
 
+- [Pixel Art Online](https://www.piskelapp.com/p/create/sprite)
+
+# TODO
+- sound (1s sound per level, can be played at any frame)
+  - return by the update function
+- text printing (once per level, static 10 character string)
+- transition between level
+  - level transition
