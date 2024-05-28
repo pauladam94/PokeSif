@@ -1,21 +1,15 @@
 # PokeSif
 Fully Extendable Game made with Löve-Lua.
 
-## Defining feature
-- pixel art game
-
 ## Game rules
-Fixed Size Window :
-- must be a power of two (probably 512 * 512)
+- Fixed Size Window : 512 * 512
+- Each level is located in one file
 
 # Levels
 - Each level is located in ONE file and only ONE lua file.
-- anything love propose is possible to be used
-    - EXCEPT : love.window stuff
-    - EXCETP : 
-The file should only have pure function.
+- No love API can be used
 
-The file will be run at the beginning of each
+The file will be run at the beginning of each frame.
 
 # API for levels
 
@@ -30,43 +24,41 @@ the whole level.
 change_level(level,
 
 ## Draw Sprites :
-> describe what to draw at a given moment
-- return a table (of max size 100 to see)
-
-eacht element os this table contains :
-- position for the sprite to be draw
-
+- Return a table of sprite to draw in this format :
+```lua
 {
-  {x, y},
-  level,
-  number_sprite
+  { x, y, level, number_sprite },
+  { x, y, level, number_sprite },
+  ... -- 300 max
 }
-
-### Conditions :
-- 0 < x <= widht
-- 0 < y <= height
-- 
-- number_sprites (false | true)
-
-## Allowed behavior in level :
-- send
+```
+- 0 < x : float <= 16
+- 0 < y : float <= 16
+- 1<= level_sprite : int <= current_level
+- 1 <= number_sprites : int <= 2
 
 ## Rules inside Level Functions :
-- NOT any use of io
-- NOT use of the filesytem
-- NOT any use of love function
-- functions should not crash
+- NO use of io/filesytem
+- NO use of love function
+- functions should not crash (or it will crash the game)
 
-## How the map is defined :
+# Map :
+512 * 512
+8*8 sprite are draw in 32*32.
 
 # Is there a global state of the game ?
 So that there can be state about ?
 
 - [Pixel Art Online](https://www.piskelapp.com/p/create/sprite)
 
+# Development Stuff
+- Hot Reload : press "r"
+
 # TODO
-- sound (1s sound per level, can be played at any frame)
-  - return by the update function
 - text printing (once per level, static 10 character string)
-- transition between level
-  - level transition
+  - find nice font.
+  - on
+- Level Transition (hard part)
+  - capture the frame
+  - generate next frame
+  - do a slide

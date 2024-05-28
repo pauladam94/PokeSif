@@ -1,51 +1,64 @@
 local level = {
+    intro_text = "Wtf is this game ?",
     posx = 0,
     posy = 0,
-    speed = 5
+    speed = 5,
+    i = 0,
 }
 
-function level:change_level()
-end
-
-function level:update(dt, keys_pressed)
+function level:update(dt, keys_pressed, bounds)
+    local result = {}
     if keys_pressed.down then
-        level.posy = level.posy + level.speed * dt
+        self.posy = self.posy + self.speed * dt
     end
     if keys_pressed.up then
-        level.posy = level.posy - level.speed * dt
+        self.posy = self.posy - self.speed * dt
     end
     if keys_pressed.left then
-        level.posx = level.posx - level.speed * dt
+        self.posx = self.posx - self.speed * dt
     end
     if keys_pressed.right then
-        level.posx = level.posx + level.speed * dt
+        self.posx = self.posx + self.speed * dt
     end
-
-    if level.posx < 0 then
-        level.posx = 0
+    if self.posx < 0 then
+        self.posx = 0
     end
-    if level.posy < 0 then
-        level.posy = 0
+    if self.posy < 0 then
+        self.posy = 0
     end
+    if self.posx > bounds.x.max then
+        self.posx = bounds.x.max
+    end
+    if self.posy > bounds.y.max then
+        self.posy = bounds.y.max
+    end
+    if self.i >= 300 then
+        result.next_level_direction = "up"
+    end
+    self.i = self.i + 1;
+    if self.i % 100 == 0 then
+        result.sound = 1;
+    end
+    return result
 end
 
-function level:draw()
+function level:draw(bounds)
     local result = {}
     for x = 0, 15 do
         for y = 0, 15 do
             result[x + y * 16] = {
                 x = x,
                 y = y,
-                level = 1,
-                number_sprite = 1
+                level_number = 1,
+                sprite_number = 1
             }
         end
     end
     result[257] = {
-        x = level.posx,
-        y = level.posy,
-        level = 1,
-        number_sprite = 2
+        x = self.posx,
+        y = self.posy,
+        level_number = 1,
+        sprite_number = 2
     }
     return result
 end
