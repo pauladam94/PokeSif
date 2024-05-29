@@ -29,3 +29,10 @@ local level = {
   level:draw(bounds) -> frame_info
 }
 ```
+
+
+## Rules inside Level Functions :
+- NO use of io/filesytem
+- NO use of love function
+- functions should not crash (or it will crash the game)
+

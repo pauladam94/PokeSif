@@ -1,3 +1,31 @@
+function DRAW_TABLE(frame_info, dx, dy, in_transition)
+    assert(#frame_info <= 300)
+    for _, sprite_info in pairs(frame_info) do
+        assert(
+            sprite_info.sprite_number == BOUNDS.sprite_number.min or
+            sprite_info.sprite_number == BOUNDS.sprite_number.max
+        )
+        if not in_transition then
+            assert(
+                sprite_info.level_number >= BOUNDS.level_number.min and
+                sprite_info.level_number <= CurrentLevel
+            )
+        end
+        assert(sprite_info.x <= HEIGHT / (SCALE_FACTOR * SPRITE_HEIGHT))
+        assert(sprite_info.y <= WIDTH / (SCALE_FACTOR * SPRITE_WIDTH))
+        assert(sprite_info.x >= 0)
+        assert(sprite_info.y >= 0)
+        love.graphics.draw(
+            SPRITE[sprite_info.level_number][sprite_info.sprite_number],
+            (sprite_info.x + dx) * SCALE_FACTOR * SPRITE_WIDTH,
+            (sprite_info.y + dy) * SCALE_FACTOR * SPRITE_HEIGHT,
+            0,
+            SCALE_FACTOR,
+            SCALE_FACTOR
+        )
+    end
+end
+
 function love.load()
     love.graphics.setFont(love.graphics.newFont("/assets/Minecraft.ttf", 15))
     love.graphics.setDefaultFilter("nearest", "nearest")
@@ -29,8 +57,14 @@ function love.load()
         }
         SOUND[i] = love.audio.newSource("level_" .. tostring(i) .. "/sound.mp3", "static")
     end
+    SPEED_TRANSITION = 0.5
+    PrecedentDraw = nil
+    NextDraw = nil
+    TransitionState = nil
+    TransitionDirection = nil
+
+    FrameInfo = nil
     CurrentLevel = 1
-    EnteringLevel = false
     LevelLogic = dofile("level_" .. tostring(CurrentLevel) .. "/main.lua")
     KeysPressed = {
         up = false,
@@ -56,52 +90,59 @@ end
 
 function love.update(dt)
     -- Get Frame Info from the level
-    local frame_info = LevelLogic:update(dt, KeysPressed, BOUNDS)
-    if frame_info.sound ~= nil then
-        love.audio.play(SOUND[frame_info.sound])
+    if TransitionState == nil then
+        FrameInfo = LevelLogic:update(dt, KeysPressed, BOUNDS)
+    end
+    if FrameInfo.sound ~= nil then
+        love.audio.play(SOUND[FrameInfo.sound])
     end
 
     -- change level
-    if frame_info.next_level_direction ~= nil then
+    if FrameInfo.next_level_direction ~= nil then
         CurrentLevel = CHANGE_LEVEL(
             CurrentLevel,
-            frame_info.next_level_direction
+            FrameInfo.next_level_direction
         )
-        EnteringLevel = true
+        TransitionDirection = FrameInfo.next_level_direction
+        FrameInfo.next_level_direction = nil
+        TransitionState = 0
     end
 
     -- Hot ReLoading the Level
-    if EnteringLevel or love.keyboard.isDown("r") then
-        LevelLogic = {}
+    if TransitionState == 0 or love.keyboard.isDown("r") then
         LevelLogic = dofile("level_" .. tostring(CurrentLevel) .. "/main.lua")
-        EnteringLevel = false
+        NextDraw = LevelLogic:draw()
+    end
+
+    -- Update Transition state
+    if TransitionState ~= nil then
+        TransitionState = TransitionState + dt * SPEED_TRANSITION
+    end
+
+    -- End of transition
+    if TransitionState ~= nil and TransitionState >= 1 then
+        TransitionState = nil
     end
 end
 
 function love.draw()
-    local draw_frame_info = LevelLogic:draw()
-    assert(#LevelLogic <= 300)
-    for _, sprite_info in pairs(draw_frame_info) do
-        assert(
-            sprite_info.sprite_number == BOUNDS.sprite_number.min or
-            sprite_info.sprite_number == BOUNDS.sprite_number.max
-        )
-        assert(
-            sprite_info.level_number >= BOUNDS.level_number.min and
-            sprite_info.level_number <= CurrentLevel
-        )
-        assert(sprite_info.x <= HEIGHT / (SCALE_FACTOR * SPRITE_HEIGHT))
-        assert(sprite_info.y <= WIDTH / (SCALE_FACTOR * SPRITE_WIDTH))
-        assert(sprite_info.x >= 0)
-        assert(sprite_info.y >= 0)
-        love.graphics.draw(
-            SPRITE[sprite_info.level_number][sprite_info.sprite_number],
-            sprite_info.x * SCALE_FACTOR * SPRITE_WIDTH,
-            sprite_info.y * SCALE_FACTOR * SPRITE_HEIGHT,
-            0,
-            SCALE_FACTOR,
-            SCALE_FACTOR
-        )
+    if TransitionState == nil then
+        PrecedentDraw = LevelLogic:draw()
+        DRAW_TABLE(PrecedentDraw, 0, 0)
+    else
+        if TransitionDirection == "up" then
+            DRAW_TABLE(PrecedentDraw, 0, TransitionState * 16, true)
+            DRAW_TABLE(NextDraw, 0, TransitionState * 16 - 16, true)
+        elseif TransitionDirection == "down" then
+            DRAW_TABLE(PrecedentDraw, 0, -TransitionState * 16, true)
+            DRAW_TABLE(NextDraw, 0, -TransitionState * 16 + 16, true)
+        elseif TransitionDirection == "left" then
+            DRAW_TABLE(PrecedentDraw, -TransitionState * 16, 0, true)
+            DRAW_TABLE(NextDraw, -TransitionState * 16 + 16, 0, true)
+        elseif TransitionDirection == "right" then
+            DRAW_TABLE(PrecedentDraw, TransitionState * 16, 0, true)
+            DRAW_TABLE(NextDraw, TransitionState * 16 - 16, 0, true)
+        end
     end
     if love.keyboard.isDown("escape") then
         love.window.close()

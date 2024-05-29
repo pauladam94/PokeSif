@@ -32,8 +32,8 @@ function level:update(dt, keys_pressed, bounds)
     if self.posy > bounds.y.max then
         self.posy = bounds.y.max
     end
-    if self.i >= 300 then
-        result.next_level_direction = "up"
+    if self.i >= 200 then
+        result.next_level_direction = "down"
     end
     self.i = self.i + 1;
     if self.i % 100 == 0 then
