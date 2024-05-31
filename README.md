@@ -13,27 +13,36 @@ See [MAKE_LEVEL.md](MAKE_LEVEL.md) for more information about the level.
 ## Development Stuff
 - Hot Reload A Level : just press "r"
 
-## How to build
+## How to Run the Game
 Executable for each platform are located in `bin/`
 (not yet, you can find one in the [Love2D Website]())
 
 In a console use the binary of your platform 
 (here we suppose it is called love) and run :
-- In the directory PokeSif of :this repositorie (no other place)
+- In the directory PokeSif of this repositorie (no other place)
 ```bash
-love ../PokeSif
+chmod +x bin/love-11.5-x86_64.AppImage
+./bin/love-11.5-x86_64.AppImage ../PokeSif
 ```
 
 ## Classic workflow to Run the Game
 
+### On Linux
 ```bash
 git clone /link/to/repo
 cd PokeSif
-bin/binary/for/your/os ../PokeSif
+chmod +x bin/love-11.5-x86_64.AppImage
+./bin/love-11.5-x86_64.AppImage ../PokeSif
 ```
 
+### ON Windows
+TODO
+### On MacOS
+TODO
+### WebVersion 
 This should work and run the current game implemented in the levels file.
 
 # TODO
 - text printing (once per level, static 10 character string)
   - find nice font.
+- online multiplayer ?

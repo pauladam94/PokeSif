@@ -4,8 +4,11 @@
 -- 0 <= x : float <= 16
 -- 0 <= y : float <= 16
 -- 1 <= sprite_number : int <= 2
+-- 
 update_info {
+  -- nil means no sound
   sound = level_number | nil,
+  -- nil means that we stay in the current level
   next_level_direction = "up" | "down" | "left" | "right" | nil
 }
 
@@ -15,7 +18,13 @@ frame_info {
     y,
     level_number,
     sprite_number
-  },
+  }
+  {
+    x,
+    y,
+    text,
+  }
+  ,
   ... -- max 300 of them
   {x, y, level_number, sprite_number} 
 }

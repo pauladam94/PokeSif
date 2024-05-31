@@ -1,5 +1,5 @@
 function DRAW_TABLE(frame_info, dx, dy, in_transition)
-    assert(#frame_info <= 300)
+    -- assert(#frame_info <= 300)
     for _, sprite_info in pairs(frame_info) do
         assert(
             sprite_info.sprite_number == BOUNDS.sprite_number.min or
@@ -15,6 +15,7 @@ function DRAW_TABLE(frame_info, dx, dy, in_transition)
         assert(sprite_info.y <= WIDTH / (SCALE_FACTOR * SPRITE_WIDTH))
         assert(sprite_info.x >= 0)
         assert(sprite_info.y >= 0)
+
         love.graphics.draw(
             SPRITE[sprite_info.level_number][sprite_info.sprite_number],
             (sprite_info.x + dx) * SCALE_FACTOR * SPRITE_WIDTH,
@@ -27,7 +28,7 @@ function DRAW_TABLE(frame_info, dx, dy, in_transition)
 end
 
 function love.load()
-    love.graphics.setFont(love.graphics.newFont("/assets/Minecraft.ttf", 15))
+    love.graphics.setFont(love.graphics.newFont("assets/m04.TTF", 13))
     love.graphics.setDefaultFilter("nearest", "nearest")
     MAX_LEVEL = 2
     SCALE_FACTOR = 4
@@ -55,7 +56,8 @@ function love.load()
             love.graphics.newImage("level_" .. tostring(i) .. "/sprite_1.png"),
             love.graphics.newImage("level_" .. tostring(i) .. "/sprite_2.png"),
         }
-        SOUND[i] = love.audio.newSource("level_" .. tostring(i) .. "/sound.mp3", "static")
+        SOUND[i] = love.audio.newSource(
+            "level_" .. tostring(i) .. "/sound.mp3", "static")
     end
     SPEED_TRANSITION = 0.5
     PrecedentDraw = nil
@@ -65,7 +67,10 @@ function love.load()
 
     FrameInfo = nil
     CurrentLevel = 1
-    LevelLogic = dofile("level_" .. tostring(CurrentLevel) .. "/main.lua")
+    -- same behavior as the line below
+    -- LevelLogic = loadfile("level_" .. tostring(CurrentLevel) .. "/main.lua")
+    -- LevelLogic = LevelLogic()
+    LevelLogic = dofile("../level_" .. tostring(CurrentLevel) .. "/main.lua")
     KeysPressed = {
         up = false,
         down = false,
@@ -144,6 +149,11 @@ function love.draw()
             DRAW_TABLE(NextDraw, TransitionState * 16 - 16, 0, true)
         end
     end
+
+    -- love.graphics.print("ABCDEFGHUIJ", 0, 0)
+    -- love.graphics.print("First Level here blabla", 10, 10)
+    -- love.graphics.print("azertyuiopqsdfghjklmwxcvbn", 10, 100)
+    -- love.graphics.print("1234567890", 10, 200)
     if love.keyboard.isDown("escape") then
         love.window.close()
     end
