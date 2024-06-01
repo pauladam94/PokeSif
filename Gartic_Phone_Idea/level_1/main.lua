@@ -60,14 +60,6 @@ function level:draw(bounds)
         level_number = 1,
         sprite_number = 2
     }
-    for i = 258,1000 do
-        result[i] = {
-        x = self.posx,
-        y = self.posy,
-        level_number = 1,
-        sprite_number = 2
-    }
-    end
     return result
 end
 

@@ -15,14 +15,23 @@ See [MAKE_LEVEL.md](MAKE_LEVEL.md) for more information about the level.
 
 ## How to Run the Game
 Executable for each platform are located in `bin/`
-(not yet, you can find one in the [Love2D Website]())
+- there is only the one for linux
 
 In a console use the binary of your platform 
 (here we suppose it is called love) and run :
-- In the directory PokeSif of this repositorie (no other place)
+- In the directory of this repositorie (no other place)
 ```bash
 chmod +x bin/love-11.5-x86_64.AppImage
-./bin/love-11.5-x86_64.AppImage ../PokeSif
+```
+
+To run the gartic phone idea game :
+```bash
+./bin/love-11.5-x86_64.AppImage Gartic_Phone_Idea
+```
+
+To run PokeSIF game :
+```bash
+./bin/love-11.5-x86_64.AppImage PokeSif_Game
 ```
 
 ## Classic workflow to Run the Game

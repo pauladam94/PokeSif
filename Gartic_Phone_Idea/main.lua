@@ -15,7 +15,6 @@ function DRAW_TABLE(frame_info, dx, dy, in_transition)
         assert(sprite_info.y <= WIDTH / (SCALE_FACTOR * SPRITE_WIDTH))
         assert(sprite_info.x >= 0)
         assert(sprite_info.y >= 0)
-
         love.graphics.draw(
             SPRITE[sprite_info.level_number][sprite_info.sprite_number],
             (sprite_info.x + dx) * SCALE_FACTOR * SPRITE_WIDTH,
@@ -28,7 +27,6 @@ function DRAW_TABLE(frame_info, dx, dy, in_transition)
 end
 
 function love.load()
-    love.graphics.setFont(love.graphics.newFont("assets/m04.TTF", 13))
     love.graphics.setDefaultFilter("nearest", "nearest")
     MAX_LEVEL = 2
     SCALE_FACTOR = 4
@@ -149,11 +147,6 @@ function love.draw()
             DRAW_TABLE(NextDraw, TransitionState * 16 - 16, 0, true)
         end
     end
-
-    -- love.graphics.print("ABCDEFGHUIJ", 0, 0)
-    -- love.graphics.print("First Level here blabla", 10, 10)
-    -- love.graphics.print("azertyuiopqsdfghjklmwxcvbn", 10, 100)
-    -- love.graphics.print("1234567890", 10, 200)
     if love.keyboard.isDown("escape") then
         love.window.close()
     end
